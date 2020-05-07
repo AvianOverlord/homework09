@@ -6,12 +6,12 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("*",function(res,req){
-    res.sendFile(path.join(__dirname,"/index.js"));
+app.get("*",function(req,res){
+    res.sendFile(path.join(__dirname,"index.html"));
 });
 
-app.get("/notes",function(res,req){
-    res.sendFile(path.join(__dirname,"/notes.html"));
+app.get("/notes",function(req,res){
+    res.sendFile(path.join(__dirname,"notes.html"));
 });
 
 /*app.get("/api/notes",function(res,req){

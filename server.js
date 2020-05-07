@@ -11,18 +11,18 @@ app.get("/notes",function(req,res){
     res.sendFile(path.join(__dirname,"notes.html"));
 });
 
+app.get("/api/notes",function(req,res){
+    console.log("Reached function A");
+    res.sendFile(path.join(__dirname,"db/db.json"));
+});
+
+/*app.post("/api/notes",function(req,res){
+
+});*/
+
 app.get("*",function(req,res){
     res.sendFile(path.join(__dirname,"index.html"));
 });
-
-/*app.get("/api/notes",function(req,res){
-    console.log(path.join(__dirname,"db/db.json"));
-    res.json(path.join(__dirname,"db/db.json"));
-});
-
-app.post("/api/notes",function(req,res){
-
-});*/
 
 app.listen(PORT, function() {
     console.log("App listening on PORT " + PORT);

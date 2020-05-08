@@ -30,26 +30,22 @@ app.post("/api/notes",function(req,res){
     let newID = determineID(allNotes);
     let newNote = {title: req.body.title, text: req.body.text, id: newID};
     allNotes.push(newNote);
-    allNotes = JSON.stringify(allNotes);
-    fs.writeFileSync("./db/db.json",allNotes);
+    let allNotesString = JSON.stringify(allNotes);
+    fs.writeFileSync("./db/db.json",allNotesString);
     res.sendFile(path.join(__dirname,"notes.html"));
 });
 
 app.delete("/api/notes/:id",function(req,res)
 {
-    let newNotes = [];
-    let id = req.params.id;
-
-    allNotes.forEach(targetNote => {
-        if(targetNote.id !== id)
-        {
-            newNotes.push(targetNote);
+    let updatedNotes = [];
+    allNotes.forEach( note => {
+        if( note.id !== parseInt(req.params.id) ){
+            updatedNotes.push(note)
         }
     });
-    allNotes = newNotes;
-    newNotes = JSON.stringify(newNotes);
-    fs.writeFileSync("./db/db.json",newNotes);
-    res.sendFile(path.join(__dirname,"notes.html"));    
+    allNotes = updatedNotes;
+    fs.writeFileSync("./db/db.json",JSON.stringify(allNotes));
+    res.json({ok: true});
 });
 
 app.listen(PORT, function() {

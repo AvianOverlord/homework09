@@ -12,16 +12,18 @@ app.get("/notes",function(req,res){
 });
 
 app.get("/api/notes",function(req,res){
-    console.log("Reached function A");
-    res.sendFile(path.join(__dirname,"db/db.json"));
+    let allNotes = fs.readFileSync("./db/db.json");
+    allNotes = JSON.parse(allNotes);
+    console.log(allNotes);
+    res.json(allNotes);
 });
-
-/*app.post("/api/notes",function(req,res){
-
-});*/
 
 app.get("*",function(req,res){
     res.sendFile(path.join(__dirname,"index.html"));
+});
+
+app.post("/api/notes",function(req,res){
+    const newJson = JSON.stringify(req);   
 });
 
 app.listen(PORT, function() {

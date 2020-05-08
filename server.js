@@ -20,8 +20,9 @@ app.get("*",function(req,res){
 });
 
 app.post("/api/notes",function(req,res){
-    allNotes = processJSON();
-    newNote = {title: req.body.title, text: req.body.text};
+    let allNotes = processJSON();
+    let newID = determineID(allNotes);
+    let newNote = {title: req.body.title, text: req.body.text, id: newID};
     allNotes.push(newNote);
     allNotes = JSON.stringify(allNotes);
     fs.writeFileSync("./db/db.json",allNotes);
@@ -37,4 +38,16 @@ function processJSON()
     let allNotes = fs.readFileSync("./db/db.json");
     allNotes = JSON.parse(allNotes);
     return allNotes;
+}
+
+function determineID(notes)
+{
+    let currentCount = 0;
+    notes.forEach(targetNote => {
+        if(targetNote.id == currentCount)
+        {
+            currentCount++;
+        }
+    });
+    return currentCount;
 }

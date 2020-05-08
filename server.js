@@ -12,10 +12,7 @@ app.get("/notes",function(req,res){
 });
 
 app.get("/api/notes",function(req,res){
-    let allNotes = fs.readFileSync("./db/db.json");
-    allNotes = JSON.parse(allNotes);
-    console.log(allNotes);
-    res.json(allNotes);
+    res.json(processJSON);
 });
 
 app.get("*",function(req,res){
@@ -23,11 +20,21 @@ app.get("*",function(req,res){
 });
 
 app.post("/api/notes",function(req,res){
-    const newJson = JSON.stringify(req);   
+    allNotes = processJSON();
+    newNote = {title: req.body.title, text: req.body.text};
+    allNotes.push(newNote);
+    allNotes = JSON.stringify(allNotes);
+    fs.writeFileSync("./db/db.json",allNotes);
+    res.end();
 });
 
 app.listen(PORT, function() {
     console.log("App listening on PORT " + PORT);
 });
   
-
+function processJSON()
+{
+    let allNotes = fs.readFileSync("./db/db.json");
+    allNotes = JSON.parse(allNotes);
+    return allNotes;
+}

@@ -6,13 +6,20 @@ const PORT = 3000;
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static("assets"));
+
+let allNotes = [];
+fs.readFile(path.join(__dirname, "db/db.json"), "utf-8", function(err, data){
+    if(err) return console.log(err)
+    allNotes = JSON.parse(data);
+});
 
 app.get("/notes",function(req,res){
     res.sendFile(path.join(__dirname,"notes.html"));
 });
 
 app.get("/api/notes",function(req,res){
-    res.json(getJSON);
+    res.json(allNotes);
 });
 
 app.get("*",function(req,res){
@@ -20,7 +27,6 @@ app.get("*",function(req,res){
 });
 
 app.post("/api/notes",function(req,res){
-    let allNotes = getJSON();
     let newID = determineID(allNotes);
     let newNote = {title: req.body.title, text: req.body.text, id: newID};
     allNotes.push(newNote);
@@ -31,7 +37,6 @@ app.post("/api/notes",function(req,res){
 
 app.delete("/api/notes/:id",function(req,res)
 {
-    let allNotes = getJSON();
     let newNotes = [];
     let id = req.params.id;
 
@@ -41,6 +46,7 @@ app.delete("/api/notes/:id",function(req,res)
             newNotes.push(targetNote);
         }
     });
+    allNotes = newNotes;
     newNotes = JSON.stringify(newNotes);
     fs.writeFileSync("./db/db.json",newNotes);
     res.sendFile(path.join(__dirname,"notes.html"));    
@@ -50,13 +56,6 @@ app.listen(PORT, function() {
     console.log("App listening on PORT " + PORT);
 });
   
-function getJSON()
-{
-    let allNotes = fs.readFileSync("./db/db.json");
-    allNotes = JSON.parse(allNotes);
-    return allNotes;
-}
-
 function determineID(notes)
 {
     let currentCount = 0;
